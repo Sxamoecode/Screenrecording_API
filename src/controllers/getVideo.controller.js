@@ -1,9 +1,6 @@
 const fs = require('fs');
 const gfs = require('../services/mongo.db')
 
-
-
-// route: startRecord
 exports.startVid = (req, res) => {
   try {
     req.app.locals.chunks = [];
@@ -16,11 +13,11 @@ exports.startVid = (req, res) => {
     })
   }
 }
-// route = router.post('/upload/:id', upload.single('file'), uploadVid);
 exports.uploadVid = (req, res) => {
   try {
-    req.app.locals.chunks.push(req.file.path);
-    return res.json({
+    const videoData = JSON.parse(req.file.buffer);
+    req.app.locals.chunks.push(videoData); //req.file.path
+    return res.status(206).json({
       status: 'Video upload successful'
     })
   } catch (error) {
@@ -60,7 +57,7 @@ exports.stopVideo = (req, res) => {
       
       readStream.pipe(res);
     });
-      res.json({ status: 'Video processing completed' });
+      return res.json({ status: 'Video processing completed' });
   } catch (error) {
     console.error(error.message);
     return res.status(500).json({

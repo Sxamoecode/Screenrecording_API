@@ -7,7 +7,7 @@ const MONGO_URL = process.env.MONGO_URL;
 mongoose.connection.once('open', () => {
     console.log('Mongodb Online...');
 });
-
+/*
 const conn = mongoose.createConnection(MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -18,6 +18,16 @@ conn.once("open", () => {
   gfs = new mongoose.mongo.GridFSBucket(conn.db, {
     bucketName: "uploads"
   });
+});*/
+
+mongoose.connect(MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true });
+const conn = mongoose.connection;
+
+// Create GridFS stream
+let gfs;
+conn.once('open', () => {
+  gfs = Grid(conn.db, mongoose.mongo);
+  gfs.collection('videos');
 });
 
 mongoose.connection.on('error', (err) => {
