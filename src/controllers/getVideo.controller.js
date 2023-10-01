@@ -15,7 +15,7 @@ exports.startVid = (req, res) => {
 }
 exports.uploadVid = (req, res) => {
   try {
-    const videoData = JSON.parse(req.file.buffer);
+    const videoData = req.file.buffer;
     req.app.locals.chunks.push(videoData); //req.file.path
     return res.status(206).json({
       status: 'Video upload successful'
