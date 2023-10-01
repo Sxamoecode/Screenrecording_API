@@ -8,10 +8,16 @@ mongoose.connection.once('open', () => {
     console.log('Mongodb Online...');
 });
 
+const conn = mongoose.createConnection(MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
 let gfs;
-mongoose.connection.once('open', () => {
-  gfs = Grid(mongoose.connection.db, mongoose.mongo);
-  gfs.collection('videos');
+conn.once("open", () => {
+  // init stream
+  gfs = new mongoose.mongo.GridFSBucket(conn.db, {
+    bucketName: "uploads"
+  });
 });
 
 mongoose.connection.on('error', (err) => {

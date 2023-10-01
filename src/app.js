@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
 const cors = require('cors');
+const {videoRouter} = require('./routes/getVideo.router');
 
 const app = express();
 
@@ -21,5 +22,7 @@ app.use(bodyParser.urlencoded({
 app.use((error, req, res, next) => {
     res.status(500).json({ error: error.message });
 });
+
+app.use('api/', videoRouter);
 
 module.exports = app;
