@@ -1,5 +1,4 @@
-const fs = require('fs');
-const gfs = require('../services/mongo.db')
+const {transcribe} = require('../services/transcribeVid')
 
 exports.startVid = (req, res) => {
   try {
@@ -28,36 +27,26 @@ exports.uploadVid = (req, res) => {
   }
 };
 
-exports.stopVideo = (req, res) => {
+exports.stopVideo = async (req, res) => {
   try {
     const chunks = req.app.locals.chunks;
+    //console.log(chunks);
 
-    // Create a write stream to store the collated video file
-    const writeStream = gfs.createWriteStream({
-      filename: 'collated-video.mp4',
-      metadata: { originalName: 'collated-video.mp4' },
-      mode: 'w',
-    });
+    const wholeBlob = new Blob(chunks, {type: 'video/mp4'});
+
+    const wholeBlobURL = URL.createObjectURL(wholeBlob);
+
+    const transcript = transcribe(wholeBlobURL);
+    if(!transcript) {
+      console.error('Transcript error');
+    }
   
-    // Read each chunk file and append it to the write stream
-    chunks.forEach((chunkPath) => {
-      const readStream = fs.createReadStream(chunkPath);
-      readStream.pipe(writeStream);
-    });
-    
-    // When all chunks are written, send the collated video file to the frontend
-    writeStream.on('close', () => {
-      res.set('Content-Type', 'video/mp4');
-      res.set('Content-Disposition', 'attachment; filename="collated-video.mp4"');
-      
-      const readStream = gfs.createReadStream({
-        filename: 'collated-video.mp4',
-        mode: 'r',
+    res.setHeader('Content-Type', 'video/mp4');  
+    return res.json({
+        videoURL: wholeBlobURL,
+        transcript,
+        status: 'Video processing completed'
       });
-      
-      readStream.pipe(res);
-    });
-      return res.json({ status: 'Video processing completed' });
   } catch (error) {
     console.error(error.message);
     return res.status(500).json({
