@@ -14,7 +14,7 @@ const videoRouter = express.Router();
 
 videoRouter.post('/start', startVid);
 videoRouter.put('/upload', upload.single('file'), uploadVid);
-videoRouter.post('/stop', stopVideo);
+videoRouter.get('/stop', stopVideo);
 
 
 module.exports = {
