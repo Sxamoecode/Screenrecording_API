@@ -7,9 +7,6 @@ exports.transcribe = (vidURL) => {
 
   const url = 'https://api.openai.com/v1/engines/whisper/beta/completions';
 
-  // Define the video URL
-  //const video_url = 'URL.createObjectURL(wholeBlob)'; // Replace with your video URL
-
   // Define the prompt for the transcription
   const prompt = `Transcribe the following video: ${vidURL}\n\nTranscription:`;
 
