@@ -10,7 +10,7 @@ response: {
 
 ## Uploading
 https://screenrecorder-o8m5.onrender.com/upload  
-**POST**:  
+**PUT**:  
 request: Form data
 {
     file: chunks.blob
